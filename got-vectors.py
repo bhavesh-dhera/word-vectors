@@ -10,8 +10,8 @@ import codecs
 import nltk
 import re
 import matplotlib.pyplot as plt
-#ltk.download("punkt")
-#nltk.download("stopwords")
+nltk.download("punkt")
+nltk.download("stopwords")
 
 #make books one string
 book_filenames = sorted(glob.glob("./hp/*.txt"))
@@ -29,16 +29,20 @@ wordd= len(corpus_raw)
 tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 raw_sentences = tokenizer.tokenize(corpus_raw)
 
+
 #convert into list of words
 def sentence_to_worldlist(raw):
 	clean = re.sub("[^a-zA-Z]"," ", raw)
 	words = clean.split()
 	return words
 
+
+
 sentences = []
 for raw_sentence in raw_sentences:
 	if len(raw_sentence) > 0:
 		sentences.append(sentence_to_worldlist(raw_sentence))
+
 
 #example
 print(raw_sentences[5])
@@ -54,8 +58,7 @@ context_size = 7 #windows size
 downsampling = 1e-3
 
 seed =1
-t2v = w2v.Word2Vec(sg=1,seed=seed,workers=num_workers,size=num_features
- 	,min_count = min_word_count, window = context_size, sample = downsampling)
+t2v = w2v.Word2Vec(sg=1,seed=seed,workers=num_workers,size=num_features,min_count = min_word_count, window = context_size, sample = downsampling)
 
 t2v.build_vocab(sentences)
 print('Training....')
@@ -85,10 +88,13 @@ points.plot.scatter("x", "y", s=10, figsize=(20, 12))
 plt.show()
 
 
+
 print(t2v.most_similar("Dumbledore"))
 print(t2v.most_similar("Patronus"))
 print()
 print()
+
+
 def nearest_similarity_cosmul(start1, end1, end2):
     similarities = t2v.most_similar_cosmul(
         positive=[end2, start1],
@@ -98,6 +104,7 @@ def nearest_similarity_cosmul(start1, end1, end2):
     print("{start1} is related to {end1}, as {start2} is related to {end2}".format(**locals()))
     return start2
 
+
 def nearest_similarity_cosmul_1(start1, end1, start2):
     similarities = t2v.most_similar_cosmul(
         positive=[start1],
@@ -106,6 +113,7 @@ def nearest_similarity_cosmul_1(start1, end1, start2):
     end2 = similarities[0][0]
     print("{start1} is related to {end1}, as {start2} is related to {end2}".format(**locals()))
     return start2
+
 
 nearest_similarity_cosmul("Harry","Voldemort","Filch")
 #nearest_similarity_cosmul("Harry","Shae","Cersei")
